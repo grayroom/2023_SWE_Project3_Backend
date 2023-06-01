@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  mysql:
+    container_name: mysql-server
+    image: mysql:latest
+    restart: unless-stopped # 사용자가 직접 끄기 전까지 계속 재시작
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: se_project
+      MYSQL_PASSWORD: root
