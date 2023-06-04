@@ -1,21 +1,35 @@
 package com.assignment.se.entity;
 
-import com.assignment.se.entity.domain.Authority;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import java.util.*;
 
-/**
- * 사용자의 식별을 위한 id, 사용자의 이름, 사용자의 비밀번호, 사용자의 권한을 저장하는 entity입니다
- */
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_auth")
 public class UserAuth {
 	@Id
-	private String id;
+	@Column(name = "user_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long userId;
+
+	@Column(name = "username", length = 50, unique = true)
+	private String username;
+
 	private String name;
 	private String password;
-	private Authority authority;
+
+	private boolean activated;
+
+	@ManyToMany
+	@JoinTable(
+			name = "authority_user",
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "authority_name", referencedColumnName = "authority_name")
+	)
+	private Set<Authority> authorities;
 }

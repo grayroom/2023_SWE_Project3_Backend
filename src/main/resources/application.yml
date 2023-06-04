@@ -5,15 +5,12 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: true
-
+    defer-datasource-initialization: true
   datasource:
     url: jdbc:mysql://localhost:3307/se_project
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-jwt:
-  header: Authorization
-  secret: nG3DuiwZjLBhoyCRmM7x
-  expiration: 604800
-  issuer: swe_project
+  jwt:
+    secret: nG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7x
+    expiration: 604800
