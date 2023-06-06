@@ -14,3 +14,14 @@ spring:
   jwt:
     secret: nG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7x
     expiration: 604800
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+logging:
+  level:
+    root: DEBUG
+    com.assignment: DEBUG
+
+
