@@ -1,14 +1,14 @@
 package com.assignment.se.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "talk")
@@ -19,8 +19,8 @@ public class Talk {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "course_id")
-	private Course course_id;
+	@JoinColumn(name = "course")
+	private Course course;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -30,5 +30,10 @@ public class Talk {
 	private String content;
 
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String created_at;
+	private LocalDateTime created_at;
+
+	@PrePersist
+	public void prePersist() {
+		this.created_at = LocalDateTime.now();
+	}
 }

@@ -7,6 +7,7 @@ import com.assignment.se.entity.UserAuth;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,13 @@ public class UserDto {
 	public static UserDto from(UserAuth user) {
 		if(user == null) return null;
 
+		Set<Long> lecList;
+		if(user.getLectureUsers() != null) {
+			lecList = user.getLectureUsers().stream().map(LectureUser::getCourse).map(Course::getId).collect(Collectors.toSet());
+		} else {
+			lecList = new HashSet<>();
+		}
+
 		return UserDto.builder()
 				.userId(user.getId())
 				.username(user.getUsername())
@@ -55,7 +63,7 @@ public class UserDto {
 				.authorityDtoSet(user.getAuthorities().stream()
 						.map(Authority::getAuthorityName)
 						.collect(Collectors.toSet()))
-				.lectureList(user.getLectureUsers().stream().map(LectureUser::getCourse).map(Course::getId).collect(Collectors.toSet()))
+				.lectureList(lecList)
 				.build();
 	}
 }

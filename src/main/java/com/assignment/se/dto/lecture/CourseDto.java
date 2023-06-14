@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseDto {
-	private Long courseId;
+	private Long course_id;
 
 	private Long lecturer_id;
 
@@ -23,7 +23,7 @@ public class CourseDto {
 	public static CourseDto from(Course course) {
 		return CourseDto.builder()
 				.lecturer_id(course.getLecturer_id().getId())
-				.courseId(course.getId())
+				.course_id(course.getId())
 				.name(course.getName())
 				.semester(course.getSemester())
 				.credit(course.getCredit())

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,10 +26,17 @@ public class TalkControlller {
 		this.talkService = talkService;
 	}
 
-	@GetMapping("/list")
+	@PostMapping("/list")
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-	public ResponseEntity<TalkDto> getTalkList(@RequestBody CourseDto courseDto) {
-//		List<TalkDto> talkList = talkService.getTalkList(courseDto);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<List<TalkDto>> getTalkList(@RequestBody CourseDto courseDto) {
+		List<TalkDto> talkList = talkService.getTalkList(courseDto);
+		return ResponseEntity.ok().body(talkList);
+	}
+
+	@PostMapping("/create")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+	public ResponseEntity<TalkDto> createTalk(@RequestBody TalkDto talkDto) {
+		TalkDto createdTalk = talkService.createTalk(talkDto);
+		return ResponseEntity.ok(createdTalk);
 	}
 }

@@ -15,7 +15,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jwt:
     secret: nG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7xnG3DuiwZjLBhoyCRmM7x
-    expiration: 604800
+    expiration: 604800000
   devtools:
     livereload:
       enabled: true
