@@ -1,10 +1,12 @@
 package com.assignment.se.service;
 
+import com.assignment.se.dto.BoardDto;
 import com.assignment.se.dto.lecture.CourseDetailDto;
 import com.assignment.se.dto.lecture.LectureDto;
 import com.assignment.se.dto.lecture.CourseDto;
 import com.assignment.se.dto.lecture.LectureVideoDto;
 import com.assignment.se.entity.*;
+import com.assignment.se.repository.BoardRepository;
 import com.assignment.se.repository.lecture.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,6 +26,7 @@ public class LectureService {
 	private final LectureUserRepository lectureUserRepository;
 	private final LectureVideoRepository lectureVideoRepository;
 	private final LectureAttendanceRepository lectureAttendanceRepository;
+	private final BoardRepository boardRepository;
 
 	private final CourseDetailRepository courseDetailRepository;
 
@@ -35,7 +37,7 @@ public class LectureService {
 	public LectureService(UserService userService, CourseRepository courseRepository,
 	                      LectureRepository lectureRepository, LectureUserRepository lectureUserRepository,
 	                      LectureVideoRepository lectureVideoRepository, LectureAttendanceRepository lectureAttendanceRepository,
-	                      CourseDetailRepository courseDetailRepository) {
+	                      CourseDetailRepository courseDetailRepository, BoardRepository boardRepository) {
 		this.userService = userService;
 		this.courseRepository = courseRepository;
 		this.lectureRepository = lectureRepository;
@@ -43,9 +45,10 @@ public class LectureService {
 		this.lectureVideoRepository = lectureVideoRepository;
 		this.lectureAttendanceRepository = lectureAttendanceRepository;
 		this.courseDetailRepository = courseDetailRepository;
+		this.boardRepository = boardRepository;
 	}
 
-	public List<Course> getLectureList() {
+	public List<Course> getCourseList() {
 		return courseRepository.findAll();
 	}
 
@@ -64,16 +67,32 @@ public class LectureService {
 		return lectureUserRepository.save(lectureUser);
 	}
 
-	public CourseDto createLecture(CourseDto courseDto) {
-		// query Userauth from userDto
+	public CourseDto createCourse(CourseDto courseDto) {
 		try {
-			// get usreauth by userid
 			UserAuth userAuth = userService.getUserAuth(courseDto.getLecturer_id());
 			Course course = new Course(courseDto, userAuth);
-			return CourseDto.from(courseRepository.save(course));
+			CourseDto resp = CourseDto.from(courseRepository.save(course));
+
+			for(String subject : List.of("공지", "강의자료", "과제", "질문")) {
+				Board board = new Board();
+				board.setCourse(course);
+				board.setName(course.getName() + ": " + subject);
+				boardRepository.save(board);
+			}
+
+			return resp;
 		} catch (Exception e) {
 			throw new RuntimeException("UserAuth(lecturer) not found");
 		}
+	}
+
+	public List<Object> getCourseInfo(Long id) {
+		Course targetCourse = courseRepository.findById(id).orElseThrow();
+		List<Object> response = new java.util.ArrayList<>(List.of(CourseDto.from(targetCourse)));
+		// append CourseDetailDto.from(courseDetailRepository.findAllByCourse(targetCourse))
+		response.add(CourseDetailDto.from(courseDetailRepository.findAllByCourse(targetCourse)));
+		response.add(BoardDto.from(boardRepository.findAllByCourse(targetCourse)));
+		return response;
 	}
 
 	public LectureDto addLecture(LectureDto lecture) {
@@ -115,5 +134,17 @@ public class LectureService {
 		Course course = courseRepository.findById(lecture.getCourse_id()).orElseThrow();
 		CourseDetail newLecture = new CourseDetail(lecture, course);
 		return CourseDetailDto.from(courseDetailRepository.save(newLecture));
+	}
+
+	public LectureDto getLectureInfo(Long id) {
+		Lecture lecture = lectureRepository.findById(id).orElseThrow();
+		return LectureDto.from(lecture);
+	}
+
+	public List<Object> getCourseLectureList(Long id) {
+		Course course = courseRepository.findById(id).orElseThrow();
+		List<Object> response = new java.util.ArrayList<>();
+		response.add(LectureDto.from(lectureRepository.findAllByCourse(course)));
+		return response;
 	}
 }

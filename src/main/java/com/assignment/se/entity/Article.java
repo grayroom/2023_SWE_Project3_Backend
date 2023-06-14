@@ -22,5 +22,8 @@ public class Article {
 	private UserAuth user_id;
 
 	private String name;
+
+	@Column(length = 8192)
+	private String content;
 	private String type;
 }

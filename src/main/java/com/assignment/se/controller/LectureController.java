@@ -7,7 +7,6 @@ import com.assignment.se.repository.UserAuthRepository;
 import com.assignment.se.service.LectureService;
 import com.assignment.se.service.security.AuthenticationFacade;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,10 +33,10 @@ public class LectureController {
 		this.authenticationFacade = authenticationFacade;
 	}
 
-	@GetMapping("/list")
-	public ResponseEntity<List<CourseDto>> getLectureList() {
-		List<Course> lectureList = lectureService.getLectureList();
-		return ResponseEntity.ok(lectureList.stream().map(CourseDto::from).toList());
+	@GetMapping("/course-list")
+	public ResponseEntity<List<CourseDto>> getCourseList() {
+		List<Course> courseList = lectureService.getCourseList();
+		return ResponseEntity.ok(courseList.stream().map(CourseDto::from).toList());
 	}
 
 	@GetMapping("/user-list")
@@ -73,8 +72,17 @@ public class LectureController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 //	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<CourseDto> createLectureInfo(@RequestBody CourseDto lecture) {
-		CourseDto lectureInfo = lectureService.createLecture(lecture);
+		CourseDto lectureInfo = lectureService.createCourse(lecture);
 		return ResponseEntity.ok(lectureInfo);
+	}
+
+	@GetMapping("/get-course")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<List<Object>> getCourseInfo(@RequestParam Long id) {
+		List<Object> response = lectureService.getCourseInfo(id);
+		List<Object> courseLectureList = lectureService.getCourseLectureList(id);
+		response.add(courseLectureList);
+		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/add-course-detail")
@@ -88,6 +96,13 @@ public class LectureController {
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<LectureDto> addLecture(@RequestBody LectureDto lecture) {
 		LectureDto lectureInfo = lectureService.addLecture(lecture);
+		return ResponseEntity.ok(lectureInfo);
+	}
+
+	@GetMapping("/get-lecture")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<LectureDto> getLectureInfo(@RequestParam Long id) {
+		LectureDto lectureInfo = lectureService.getLectureInfo(id);
 		return ResponseEntity.ok(lectureInfo);
 	}
 

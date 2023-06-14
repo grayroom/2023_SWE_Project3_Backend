@@ -4,6 +4,7 @@ import com.assignment.se.entity.Lecture;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,11 +23,15 @@ public class LectureDto {
 	public static LectureDto from(Lecture lecture) {
 		return LectureDto.builder()
 				.id(lecture.getId())
-				.course_id(lecture.getCourse_id().getId())
+				.course_id(lecture.getCourse().getId())
 				.classroom(lecture.getClassroom())
 				.lecture_name(lecture.getLecture_name())
 				.begin_at(lecture.getBegin_at())
 				.end_at(lecture.getEnd_at())
 				.build();
+	}
+
+	public static List<LectureDto> from(List<Lecture> lectureList) {
+		return lectureList.stream().map(LectureDto::from).toList();
 	}
 }

@@ -19,8 +19,8 @@ public class Lecture {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "course_id")
-	private Course course_id;
+	@JoinColumn(name = "course")
+	private Course course;
 
 	private String classroom;
 	private String lecture_name;
@@ -29,7 +29,7 @@ public class Lecture {
 
 
 	public Lecture (LectureDto lecture, Course course) {
-		this.course_id = course;
+		this.course = course;
 		this.classroom = lecture.getClassroom();
 		this.lecture_name = lecture.getLecture_name();
 		this.begin_at = lecture.getBegin_at();

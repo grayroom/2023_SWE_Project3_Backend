@@ -19,13 +19,20 @@ import java.util.Set;
 @Table(name = "course")
 public class Course {
 	@Id
-	@Column(name = "lecture_id")
+	@Column(name = "course_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "lecturer_id")
 	private UserAuth lecturer_id;
+
+	@OneToMany
+	@JoinColumn(name = "board")
+	private List<Board> boards;
+
+	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+	private Set<LectureUser> lectureUsers = new HashSet<>();
 
 	private String name;
 	private String description;
@@ -43,6 +50,4 @@ public class Course {
 		this.type = courseDto.getType();
 	}
 
-	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-	private Set<LectureUser> lectureUsers = new HashSet<LectureUser>(0);
 }

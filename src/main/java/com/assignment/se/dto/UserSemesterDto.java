@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserSemesterDto {
-	List<CourseDto> lectureInfoList;
+	List<CourseDto> courseList;
 	Long totalCredit;
 
 	public static UserSemesterDto from(List<Course> courseList) {
 		return UserSemesterDto.builder()
-				.lectureInfoList(courseList.stream().map(CourseDto::from).toList())
+				.courseList(courseList.stream().map(CourseDto::from).toList())
 				.totalCredit(courseList.stream().mapToLong(Course::getCredit).sum())
 				.build();
 	}

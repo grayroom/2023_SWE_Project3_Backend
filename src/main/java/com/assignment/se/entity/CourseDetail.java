@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,16 +22,19 @@ public class CourseDetail {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "course_id")
+	@JoinColumn(name = "course")
 	private Course course;
 
 	private String classroom;
-	private LocalDateTime begin_at;
-	private LocalDateTime end_at;
+
+	private String day_of_week;
+	private Time begin_at;
+	private Time end_at;
 
 	public CourseDetail(CourseDetailDto courseDetailDto, Course course) {
 		this.course = course;
 		this.classroom = courseDetailDto.getClassroom();
+		this.day_of_week = courseDetailDto.getDay_of_week();
 		this.begin_at = courseDetailDto.getBegin_at();
 		this.end_at = courseDetailDto.getEnd_at();
 	}
