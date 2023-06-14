@@ -26,6 +26,9 @@ public class Talk {
 	@JoinColumn(name = "user_id")
 	private UserAuth user_id;
 
+	@Column(name = "content")
 	private String content;
+
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private String created_at;
 }

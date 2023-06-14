@@ -1,10 +1,7 @@
 package com.assignment.se.controller;
 
 import com.assignment.se.dto.UserSemesterDto;
-import com.assignment.se.dto.lecture.CourseDetailDto;
-import com.assignment.se.dto.lecture.LectureDto;
-import com.assignment.se.dto.lecture.CourseDto;
-import com.assignment.se.dto.lecture.LectureVideoDto;
+import com.assignment.se.dto.lecture.*;
 import com.assignment.se.entity.*;
 import com.assignment.se.repository.UserAuthRepository;
 import com.assignment.se.service.LectureService;
@@ -61,13 +58,13 @@ public class LectureController {
 
 	@PostMapping("/apply")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<LectureUser> applyLecture(@RequestBody Map<String, Long> param) {
+	public ResponseEntity<LectureUserDto> applyLecture(@RequestBody Map<String, Long> param) {
 		Authentication authentication = authenticationFacade.getAuthentication();
 		Optional<UserAuth> optionalUserAuth = userAuthRepository.findByUsername(authentication.getName());
 		if (optionalUserAuth.isPresent()) {
 			UserAuth userAuth = optionalUserAuth.get();
 			LectureUser lectureUser = lectureService.applyLecture(userAuth, param.get("lectureId"));
-			return ResponseEntity.ok(lectureUser);
+			return ResponseEntity.ok(LectureUserDto.from(lectureUser));
 		}
 		return ResponseEntity.notFound().build();
 	}

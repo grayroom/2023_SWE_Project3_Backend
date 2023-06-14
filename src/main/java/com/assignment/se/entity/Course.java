@@ -28,6 +28,8 @@ public class Course {
 	private UserAuth lecturer_id;
 
 	private String name;
+	private String description;
+
 	private Long semester;
 	private Long credit; // 학점수
 	private String type; // 전공/교양 구분
@@ -35,6 +37,7 @@ public class Course {
 	public Course(CourseDto courseDto, UserAuth lecturer) {
 		this.lecturer_id = lecturer;
 		this.name = courseDto.getName();
+		this.description = courseDto.getDescription();
 		this.semester = courseDto.getSemester();
 		this.credit = courseDto.getCredit();
 		this.type = courseDto.getType();

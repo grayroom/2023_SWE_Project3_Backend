@@ -14,6 +14,8 @@ public class CourseDto {
 	private Long lecturer_id;
 
 	private String name;
+	private String description;
+
 	private Long semester;
 	private Long credit;
 	private String type;
