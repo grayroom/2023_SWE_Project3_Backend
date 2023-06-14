@@ -36,12 +36,18 @@ public class UserService {
 		UserAuth user = UserAuth.builder()
 				.username(userDto.getUsername())
 				.name(userDto.getName())
+				.semester(userDto.getSemester())
+				.gender(userDto.getGender())
+				.dob(userDto.getDob())
+				.phone_number(userDto.getPhone_number())
+				.email(userDto.getEmail())
 				.password(passwordEncoder.encode(userDto.getPassword()))
-				.authorities(Collections.singleton(authority))
+				.authorities(Collections.singletonList(authority))
 				.activated(true)
 				.build();
+		userRepository.save(user);
 
-		return UserDto.from(userRepository.save(user));
+		return UserDto.from(user);
 	}
 
 	@Transactional(readOnly = true)
@@ -56,5 +62,11 @@ public class UserService {
 						.flatMap(userRepository::findOneWithAuthoritiesByUsername)
 						.orElseThrow(() -> new NotFoundMemberException("Member not found"))
 		);
+	}
+
+	// TODO: 검증해주세요
+	@Transactional(readOnly = true)
+	public UserAuth getUserAuth(Long userId) {
+		return userRepository.findById(userId).orElseThrow();
 	}
 }

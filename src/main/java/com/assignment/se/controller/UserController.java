@@ -1,32 +1,32 @@
 package com.assignment.se.controller;
 
 import com.assignment.se.dto.UserDto;
+import com.assignment.se.entity.UserAuth;
+import com.assignment.se.repository.UserAuthRepository;
 import com.assignment.se.service.UserService;
+import com.assignment.se.service.security.AuthenticationFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 	private final UserService userService;
+	private final AuthenticationFacade authenticationFacade;
+	private final UserAuthRepository userAuthRepository;
 
-	public UserController(UserService userService) {
+	@Autowired
+	public UserController(UserService userService, AuthenticationFacade authenticationFacade,
+	                      UserAuthRepository userAuthRepository) {
 		this.userService = userService;
-	}
-
-	@GetMapping("/hello")
-	public ResponseEntity<String> hello() {
-		return ResponseEntity.ok("hello");
-	}
-
-	@PostMapping("/test-redirect")
-	public void testRedirect(HttpServletResponse response) throws IOException {
-		response.sendRedirect("/api/user");
+		this.authenticationFacade = authenticationFacade;
+		this.userAuthRepository = userAuthRepository;
 	}
 
 	@PostMapping("/signup")
@@ -39,7 +39,14 @@ public class UserController {
 	@GetMapping("/user")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<UserDto> getMyUserInfo(HttpServletRequest request) {
-		return ResponseEntity.ok(userService.getMyUserWithAuthorities());
+		// get user information
+		Authentication authentication = authenticationFacade.getAuthentication();
+		Optional<UserAuth> optionalUserAuth = userAuthRepository.findByUsername(authentication.getName());
+		if (optionalUserAuth.isPresent()) {
+			UserAuth userAuth = optionalUserAuth.get();
+			return ResponseEntity.ok(UserDto.from(userAuth));
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@GetMapping("/user/{username}")

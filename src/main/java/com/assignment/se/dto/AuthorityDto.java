@@ -9,4 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 public class AuthorityDto {
 	private String authorityName;
+
+
 }

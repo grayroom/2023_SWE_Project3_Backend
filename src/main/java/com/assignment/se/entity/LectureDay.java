@@ -14,8 +14,8 @@ public class LectureDay {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "lecture_info_id")
-	private LectureInfo lecture_info_id;
+	@JoinColumn(name = "lecture_id")
+	private Course lecture_id;
 
 	private String day; // 강의 요일
 	private String period; // 강의 교시

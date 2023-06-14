@@ -1,0 +1,9 @@
+lecture:
+  file:
+    path: src/main/resources/lecture/video
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
