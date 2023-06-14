@@ -19,7 +19,7 @@ public class Lecture {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "lecture_id")
+	@JoinColumn(name = "course_id")
 	private Course course_id;
 
 	private String classroom;

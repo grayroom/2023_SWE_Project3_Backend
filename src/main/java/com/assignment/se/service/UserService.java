@@ -1,12 +1,14 @@
 package com.assignment.se.service;
 
 import java.util.Collections;
+import java.util.List;
 
 import com.assignment.se.dto.UserDto;
 import com.assignment.se.entity.Authority;
 import com.assignment.se.entity.UserAuth;
 import com.assignment.se.exception.DuplicateMemberException;
 import com.assignment.se.exception.NotFoundMemberException;
+import com.assignment.se.repository.AuthorityRepository;
 import com.assignment.se.repository.UserAuthRepository;
 import com.assignment.se.util.SecurityUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +44,7 @@ public class UserService {
 				.phone_number(userDto.getPhone_number())
 				.email(userDto.getEmail())
 				.password(passwordEncoder.encode(userDto.getPassword()))
-				.authorities(Collections.singletonList(authority))
+				.authorities(Collections.singleton(authority))
 				.activated(true)
 				.build();
 		userRepository.save(user);

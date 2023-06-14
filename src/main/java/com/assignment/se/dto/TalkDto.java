@@ -7,6 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenDto {
-	private String token;
+public class TalkDto {
+	Long id;
+
+
 }

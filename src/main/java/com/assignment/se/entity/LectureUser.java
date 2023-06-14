@@ -15,7 +15,7 @@ public class LectureUser {
 	private Long lecture_user_id;
 
 	@ManyToOne
-	@JoinColumn(name = "lecture_id")
+	@JoinColumn(name = "course_id")
 	private Course course;
 
 	@ManyToOne
