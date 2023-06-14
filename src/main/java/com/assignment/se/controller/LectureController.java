@@ -1,16 +1,16 @@
 package com.assignment.se.controller;
 
 import com.assignment.se.dto.UserSemesterDto;
+import com.assignment.se.dto.lecture.CourseDetailDto;
 import com.assignment.se.dto.lecture.LectureDto;
 import com.assignment.se.dto.lecture.CourseDto;
 import com.assignment.se.dto.lecture.LectureVideoDto;
-import com.assignment.se.entity.Course;
-import com.assignment.se.entity.LectureUser;
-import com.assignment.se.entity.UserAuth;
+import com.assignment.se.entity.*;
 import com.assignment.se.repository.UserAuthRepository;
 import com.assignment.se.service.LectureService;
 import com.assignment.se.service.security.AuthenticationFacade;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -80,6 +80,13 @@ public class LectureController {
 		return ResponseEntity.ok(lectureInfo);
 	}
 
+	@PostMapping("/add-course-detail")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<CourseDetailDto> createLectureDetail(@RequestBody CourseDetailDto lecture) {
+		CourseDetailDto lectureInfo = lectureService.createLectureDetail(lecture);
+		return ResponseEntity.ok(lectureInfo);
+	}
+
 	@PostMapping("/add-lecture")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<LectureDto> addLecture(@RequestBody LectureDto lecture) {
@@ -97,5 +104,24 @@ public class LectureController {
 		}
 		LectureVideoDto lectureVideo = lectureService.addVideo(lecture_id, video);
 		return ResponseEntity.ok(lectureVideo);
+	}
+
+	@PostMapping(value = "/list-video")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<List<LectureVideoDto>> getVideoList(@RequestBody Map<String, Long> param) {
+		List<LectureVideoDto> lectureVideoList = lectureService.getLectureVideoList(param.get("lectureId"));
+		return ResponseEntity.ok(lectureVideoList);
+	}
+
+	@PostMapping(value = "/attend")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<LectureAttendance> attendLecture(@RequestBody Map<String, Long> param) {
+		Authentication authentication = authenticationFacade.getAuthentication();
+		Optional<UserAuth> optionalUserAuth = userAuthRepository.findByUsername(authentication.getName());
+		if (optionalUserAuth.isPresent()) {
+			UserAuth userAuth = optionalUserAuth.get();
+			return ResponseEntity.ok(lectureService.attendLecture(param.get("lectureId"), userAuth));
+		}
+		return ResponseEntity.notFound().build();
 	}
 }

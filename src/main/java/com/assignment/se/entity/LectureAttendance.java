@@ -1,14 +1,16 @@
 package com.assignment.se.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "lecture_attendance")
 @IdClass(LectureAttendance.class)
 public class LectureAttendance implements Serializable {

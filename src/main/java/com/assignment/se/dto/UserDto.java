@@ -42,6 +42,7 @@ public class UserDto {
 		if(user == null) return null;
 
 		return UserDto.builder()
+				.userId(user.getId())
 				.username(user.getUsername())
 				.name(user.getName())
 				.semester(user.getSemester())

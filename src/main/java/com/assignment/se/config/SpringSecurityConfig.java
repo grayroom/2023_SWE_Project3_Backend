@@ -58,7 +58,7 @@ public class SpringSecurityConfig {
 				)
 
 				.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-						.requestMatchers("/api/hello", "/api/login", "/api/signup").permitAll()
+						.requestMatchers("/api/login", "/api/signup", "/static", "/static/lecture/1").permitAll()
 						.anyRequest().authenticated()
 				)
 
