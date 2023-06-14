@@ -1,5 +1,7 @@
 package com.assignment.se.dto;
 
+import com.assignment.se.entity.Authority;
+import com.assignment.se.entity.Course;
 import com.assignment.se.entity.LectureUser;
 import com.assignment.se.entity.UserAuth;
 import lombok.*;
@@ -33,9 +35,9 @@ public class UserDto {
 
 	private String email;
 
-	private Set<AuthorityDto> authorityDtoSet;
+	private Set<String> authorityDtoSet;
 
-	private Set<LectureUser> lectureList;
+	private Set<Long> lectureList;
 
 
 	public static UserDto from(UserAuth user) {
@@ -51,9 +53,9 @@ public class UserDto {
 				.phone_number(user.getPhone_number())
 				.email(user.getEmail())
 				.authorityDtoSet(user.getAuthorities().stream()
-						.map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())
+						.map(Authority::getAuthorityName)
 						.collect(Collectors.toSet()))
-				.lectureList(user.getLectureUsers())
+				.lectureList(user.getLectureUsers().stream().map(LectureUser::getCourse).map(Course::getId).collect(Collectors.toSet()))
 				.build();
 	}
 }
