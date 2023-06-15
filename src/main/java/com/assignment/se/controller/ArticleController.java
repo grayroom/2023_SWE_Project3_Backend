@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +24,15 @@ public class ArticleController {
 		this.articleService = articleService;
 	}
 
-	@PostMapping("/add")
+	@PostMapping(value="/add", consumes = {"multipart/form-data"})
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<ArticleDto> addArticle(@RequestBody ArticleDto article) {
-		return ResponseEntity.ok(articleService.addArticle(article));
+	public ResponseEntity<List<Object>> addArticle(
+			@ModelAttribute ArticleDto article) throws Exception {
+
+		ArticleDto addedArticle = articleService.addArticle(article);
+		if (article.getFiles() != null)
+			return ResponseEntity.ok().body(List.of(addedArticle, articleService.addArticleFiles(addedArticle.getId(), article.getFiles())));
+		return ResponseEntity.ok().body(List.of(addedArticle));
 	}
 
 	@PostMapping("/get")
