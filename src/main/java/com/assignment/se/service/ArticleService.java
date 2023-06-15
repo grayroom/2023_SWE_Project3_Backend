@@ -74,7 +74,7 @@ public class ArticleService {
 			try {
 				Files.createDirectories(path.getParent());
 				Files.copy(file.getInputStream(), path);
-				resList.add(path.toString());
+				resList.add( Path.of("/resource/article", article.getId().toString(), file.getOriginalFilename()).toString());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
