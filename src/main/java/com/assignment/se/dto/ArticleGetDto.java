@@ -2,7 +2,6 @@ package com.assignment.se.dto;
 
 import com.assignment.se.entity.Article;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleDto {
+public class ArticleGetDto {
 	private Long id;
 	private Long parent_article_id;
 	private Long board_id;
@@ -26,12 +25,12 @@ public class ArticleDto {
 
 	private LocalDateTime created_at;
 
-	List<MultipartFile> files;
+	List<String> filePathList;
 
-	public static ArticleDto from(Article article) {
-		return ArticleDto.builder()
+
+	public static ArticleGetDto from(Article article) {
+		return ArticleGetDto.builder()
 				.id(article.getId())
-				.parent_article_id(article.getParent_article() == null ? null : article.getParent_article().getId())
 				.board_id(article.getBoard().getId())
 				.user_id(article.getUser().getId())
 				.user_name(article.getUser().getName())
@@ -41,7 +40,22 @@ public class ArticleDto {
 				.created_at(article.getCreated_at())
 				.build();
 	}
-	public static List<ArticleDto> from(List<Article> articleList) {
-		return articleList.stream().map(ArticleDto::from).toList();
+	public static ArticleGetDto from(Article article, List<String> filePathList) {
+		return ArticleGetDto.builder()
+				.id(article.getId())
+				.parent_article_id(article.getParent_article() == null ? null : article.getParent_article().getId())
+				.board_id(article.getBoard().getId())
+				.user_id(article.getUser().getId())
+				.user_name(article.getUser().getName())
+				.name(article.getName())
+				.content(article.getContent())
+				.type(article.getType())
+				.created_at(article.getCreated_at())
+				.filePathList(filePathList)
+				.build();
+	}
+
+	public static List<ArticleGetDto> from(List<Article> articleList) {
+		return articleList.stream().map(ArticleGetDto::from).toList();
 	}
 }
