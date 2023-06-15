@@ -109,7 +109,9 @@ public class LectureService {
 			Files.createDirectories(filePath.getParent());
 			// save file
 			Files.copy(video.getInputStream(), filePath);
-			LectureVideo lectureVideo = new LectureVideo(lecture, filePath.toString());
+			LectureVideo lectureVideo = new LectureVideo(
+					lecture,
+					Path.of("/resource/lecture/video", lecture.getId().toString(), video.getOriginalFilename()).toString());
 
 			return LectureVideoDto.from(lectureVideoRepository.save(lectureVideo));
 		} catch(Exception e) {
