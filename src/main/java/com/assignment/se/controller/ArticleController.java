@@ -1,6 +1,7 @@
 package com.assignment.se.controller;
 
 import com.assignment.se.dto.ArticleDto;
+import com.assignment.se.dto.ArticleGetDto;
 import com.assignment.se.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -37,7 +38,7 @@ public class ArticleController {
 
 	@PostMapping("/get")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<ArticleDto> getArticle(@RequestBody Map<String, Long> params) {
+	public ResponseEntity<ArticleGetDto> getArticle(@RequestBody Map<String, Long> params) {
 		return ResponseEntity.ok(articleService.getArticle(params.get("article_id")));
 	}
 
@@ -55,7 +56,7 @@ public class ArticleController {
 
 	@DeleteMapping("/delete/{article_id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<ArticleDto> deleteArticle(@PathVariable String article_id) {
+	public ResponseEntity<ArticleGetDto> deleteArticle(@PathVariable String article_id) {
 		return ResponseEntity.ok(articleService.deleteArticle(Long.parseLong(article_id)));
 	}
 }

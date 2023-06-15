@@ -1,6 +1,7 @@
 package com.assignment.se.service;
 
 import com.assignment.se.dto.ArticleDto;
+import com.assignment.se.dto.ArticleGetDto;
 import com.assignment.se.entity.Article;
 import com.assignment.se.repository.ArticleRepository;
 import com.assignment.se.repository.BoardRepository;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,8 +44,31 @@ public class ArticleService {
 		return ArticleDto.from(articleRepository.save(targetArticle));
 	}
 
-	public ArticleDto getArticle(Long id) {
-		return ArticleDto.from(Objects.requireNonNull(articleRepository.findById(id).orElse(null)));
+	public ArticleGetDto getArticle(Long id) {
+		List<File> files = new ArrayList<>();
+		List<String> filePathList = new ArrayList<>();
+		// from ARTICLE_FILE_PATH + id read all files
+		Path path = Path.of(ARTICLE_FILE_PATH, id.toString());
+		try {
+			Files.walk(path).forEach(file -> {
+				files.add(file.toFile());
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// for all file, cut the path at the beginning of "resource"
+		files.forEach(file -> {
+			// if file is directory, skip
+			if (file.isDirectory()) {
+				return;
+			}
+			String filePath = file.getPath();
+			filePath = filePath.substring(filePath.indexOf("resource") + 9);
+			filePathList.add(filePath);
+		});
+
+		Article respArticle = articleRepository.findById(id).orElse(null);
+		return ArticleGetDto.from(Objects.requireNonNull(respArticle), filePathList);
 	}
 
 	public List<ArticleDto> getArticleList(long l) {
@@ -60,8 +86,8 @@ public class ArticleService {
 		return article;
 	}
 
-	public ArticleDto deleteArticle(long l) {
-		ArticleDto article = getArticle(l);
+	public ArticleGetDto deleteArticle(long l) {
+		ArticleGetDto article = getArticle(l);
 		articleRepository.deleteById(l);
 		return article;
 	}

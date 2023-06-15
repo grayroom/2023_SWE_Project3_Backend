@@ -1,6 +1,7 @@
 package com.assignment.se.entity;
 
 import com.assignment.se.dto.ArticleDto;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,10 @@ public class Article {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@OneToOne
+	@JoinColumn(name = "parent_article")
+	private Article parent_article;
 
 	@ManyToOne
 	@JoinColumn(name = "board")
@@ -36,6 +41,7 @@ public class Article {
 	private LocalDateTime created_at;
 
 	public Article(ArticleDto articleDto) {
+		this.parent_article = articleDto.getParent_article_id() == null ? null : Article.builder().id(articleDto.getParent_article_id()).build();
 		this.name = articleDto.getName();
 		this.content = articleDto.getContent();
 		this.type = articleDto.getType();
