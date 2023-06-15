@@ -2,13 +2,9 @@ package com.assignment.se.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.lang.Nullable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -45,7 +41,7 @@ public class UserAuth  {
 	)
 	private Set<Authority> authorities;
 
-	@OneToMany(mappedBy = "userAuth", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Set<LectureUser> lectureUsers = new HashSet<LectureUser>(0);
 
 	public boolean isAccountNonExpired() {

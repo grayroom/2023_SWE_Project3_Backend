@@ -5,9 +5,11 @@ import com.assignment.se.entity.Course;
 import com.assignment.se.entity.LectureUser;
 import com.assignment.se.entity.UserAuth;
 import lombok.*;
+import org.apache.catalina.User;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,5 +67,9 @@ public class UserDto {
 						.collect(Collectors.toSet()))
 				.lectureList(lecList)
 				.build();
+	}
+
+	public static List<UserDto> from(List<UserAuth> userList) {
+		return userList.stream().map(UserDto::from).collect(Collectors.toList());
 	}
 }

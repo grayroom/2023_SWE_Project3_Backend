@@ -7,10 +7,12 @@ import com.assignment.se.repository.UserAuthRepository;
 import com.assignment.se.service.LectureService;
 import com.assignment.se.service.security.AuthenticationFacade;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,7 +71,7 @@ public class LectureController {
 	}
 
 	@PostMapping("/add-course")
-	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 //	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<CourseDto> createLectureInfo(@RequestBody CourseDto lecture) {
 		CourseDto lectureInfo = lectureService.createCourse(lecture);
@@ -86,14 +88,14 @@ public class LectureController {
 	}
 
 	@PostMapping("/add-course-detail")
-	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<CourseDetailDto> createLectureDetail(@RequestBody CourseDetailDto lecture) {
 		CourseDetailDto lectureInfo = lectureService.createLectureDetail(lecture);
 		return ResponseEntity.ok(lectureInfo);
 	}
 
 	@PostMapping("/add-lecture")
-	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<LectureDto> addLecture(@RequestBody LectureDto lecture) {
 		LectureDto lectureInfo = lectureService.addLecture(lecture);
 		return ResponseEntity.ok(lectureInfo);
@@ -133,6 +135,24 @@ public class LectureController {
 		if (optionalUserAuth.isPresent()) {
 			UserAuth userAuth = optionalUserAuth.get();
 			return ResponseEntity.ok(lectureService.attendLecture(param.get("lectureId"), userAuth));
+		}
+		return ResponseEntity.notFound().build();
+	}
+
+	@PostMapping(value = "/grade")
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public ResponseEntity<LectureUserDto> gradeLecture(@RequestBody LectureUserDto lectureUserDto) {
+		return ResponseEntity.ok(lectureService.gradeLecture(lectureUserDto));
+	}
+
+	@GetMapping(value = "/get-grade/{semesterId}")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<List<LectureUserDto>> getGrade(@PathVariable Long semesterId) {
+		Authentication authentication = authenticationFacade.getAuthentication();
+		Optional<UserAuth> optionalUserAuth = userAuthRepository.findByUsername(authentication.getName());
+		if (optionalUserAuth.isPresent()) {
+			UserAuth userAuth = optionalUserAuth.get();
+			return ResponseEntity.ok(lectureService.getGrade(userAuth, semesterId));
 		}
 		return ResponseEntity.notFound().build();
 	}

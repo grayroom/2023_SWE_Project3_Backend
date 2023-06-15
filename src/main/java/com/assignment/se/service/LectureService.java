@@ -1,10 +1,7 @@
 package com.assignment.se.service;
 
 import com.assignment.se.dto.BoardDto;
-import com.assignment.se.dto.lecture.CourseDetailDto;
-import com.assignment.se.dto.lecture.LectureDto;
-import com.assignment.se.dto.lecture.CourseDto;
-import com.assignment.se.dto.lecture.LectureVideoDto;
+import com.assignment.se.dto.lecture.*;
 import com.assignment.se.entity.*;
 import com.assignment.se.repository.BoardRepository;
 import com.assignment.se.repository.lecture.*;
@@ -54,7 +51,7 @@ public class LectureService {
 
 	// 특정 유저가 듣는 강의 목록을 가져온다.
 	public List<Course> getUserLectureList(String username) {
-		List<LectureUser> lectureUserList = lectureUserRepository.findByUserAuth_Username(username);
+		List<LectureUser> lectureUserList = lectureUserRepository.findByUser_Username(username);
 		// extract only lectureInfo from lectureUserList
 		return lectureUserList.stream().map(LectureUser::getCourse).toList();
 	}
@@ -62,7 +59,7 @@ public class LectureService {
 	public LectureUser applyLecture(UserAuth userAuth, Long lectureId) {
 		Course course = courseRepository.findById(lectureId).orElseThrow();
 		LectureUser lectureUser = new LectureUser();
-		lectureUser.setUserAuth(userAuth);
+		lectureUser.setUser(userAuth);
 		lectureUser.setCourse(course);
 		return lectureUserRepository.save(lectureUser);
 	}
@@ -148,5 +145,21 @@ public class LectureService {
 		List<Object> response = new java.util.ArrayList<>();
 		response.add(LectureDto.from(lectureRepository.findAllByCourse(course)));
 		return response;
+	}
+
+	public LectureUserDto gradeLecture(LectureUserDto lectureUserDto) {
+		Course course = courseRepository.findById(lectureUserDto.getCourse_id()).orElseThrow();
+		UserAuth userAuth = userService.getUserAuth(lectureUserDto.getUser_id());
+
+		LectureUser lectureUser = lectureUserRepository.findByCourseAndUser(course, userAuth);
+		lectureUser.setGrade(lectureUserDto.getGrade());
+		lectureUser.setScore(lectureUserDto.getScore());
+		lectureUser.setSemester(course.getSemester());
+		return LectureUserDto.from(lectureUserRepository.save(lectureUser));
+	}
+
+	public List<LectureUserDto> getGrade(UserAuth userAuth, Long semesterId) {
+		List<LectureUser> lectureUserList = lectureUserRepository.findByUserAndSemester(userAuth, semesterId);
+		return LectureUserDto.from(lectureUserList);
 	}
 }
