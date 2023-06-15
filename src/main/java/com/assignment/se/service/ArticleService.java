@@ -6,13 +6,22 @@ import com.assignment.se.repository.ArticleRepository;
 import com.assignment.se.repository.BoardRepository;
 import com.assignment.se.repository.UserAuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class ArticleService {
+
+	@Value("${article.file.path}")
+	private String ARTICLE_FILE_PATH;
 	private final BoardRepository boardRepository;
 	private final UserAuthRepository userAuthRepository;
 	private final ArticleRepository articleRepository;
@@ -55,5 +64,21 @@ public class ArticleService {
 		ArticleDto article = getArticle(l);
 		articleRepository.deleteById(l);
 		return article;
+	}
+
+	public List<String> addArticleFiles(Long article_id, List<MultipartFile> files) throws Exception {
+		List<String> resList = new ArrayList<>();
+		Article article = articleRepository.findById(article_id).orElse(null);
+		files.stream().forEach(file -> {
+			Path path = Path.of(ARTICLE_FILE_PATH, article.getId().toString(), file.getOriginalFilename());
+			try {
+				Files.createDirectories(path.getParent());
+				Files.copy(file.getInputStream(), path);
+				resList.add(path.toString());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return resList;
 	}
 }

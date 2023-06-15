@@ -4,6 +4,8 @@ import com.assignment.se.dto.ArticleDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -30,9 +32,17 @@ public class Article {
 	private String content;
 	private String type;
 
+	@Column(name = "created_at")
+	private LocalDateTime created_at;
+
 	public Article(ArticleDto articleDto) {
 		this.name = articleDto.getName();
 		this.content = articleDto.getContent();
 		this.type = articleDto.getType();
+	}
+
+	@PrePersist
+	public void prePersist() {
+		this.created_at = LocalDateTime.now();
 	}
 }
