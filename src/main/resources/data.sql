@@ -1,2 +1,2 @@
-# insert into authority (authority_name) values ('ROLE_USER');
-# insert into authority (authority_name) values ('ROLE_ADMIN');
+insert ignore into authority (authority_name) values ('ROLE_USER');
+insert ignore into authority (authority_name) values ('ROLE_ADMIN');
