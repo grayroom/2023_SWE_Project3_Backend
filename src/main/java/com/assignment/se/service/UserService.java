@@ -71,4 +71,9 @@ public class UserService {
 	public UserAuth getUserAuth(Long userId) {
 		return userRepository.findById(userId).orElseThrow();
 	}
+
+	public List<UserDto> getUserList() {
+		List<UserAuth> userAuthList = userRepository.findAll();
+		return UserDto.from(userAuthList);
+	}
 }

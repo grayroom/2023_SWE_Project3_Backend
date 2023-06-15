@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -50,8 +52,15 @@ public class UserController {
 	}
 
 	@GetMapping("/user/{username}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<UserDto> getUserInfo(@PathVariable String username) {
 		return ResponseEntity.ok(userService.getUserWithAuthorities(username));
 	}
+
+	@GetMapping("/user/list")
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public ResponseEntity<List<UserDto>> getUserList() {
+		return ResponseEntity.ok().body(userService.getUserList());
+	}
+
 }
