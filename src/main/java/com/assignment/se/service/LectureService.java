@@ -160,6 +160,15 @@ public class LectureService {
 
 	public List<LectureUserDto> getGrade(UserAuth userAuth, Long semesterId) {
 		List<LectureUser> lectureUserList = lectureUserRepository.findByUserAndSemester(userAuth, semesterId);
-		return LectureUserDto.from(lectureUserList);
+		List<LectureUserDto> lectureUserDtoList = LectureUserDto.from(lectureUserList);
+		List<LectureUserDto> response = new java.util.ArrayList<>();
+		// for about all lectureUserDtoList, get courseDto information
+		for(LectureUserDto lectureUserDto : lectureUserDtoList) {
+			Course course = courseRepository.findById(lectureUserDto.getCourse_id()).orElseThrow();
+			lectureUserDto.setCourse(CourseDto.from(course));
+			response.add(lectureUserDto);
+		}
+
+		return response;
 	}
 }

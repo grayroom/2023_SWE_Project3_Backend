@@ -14,6 +14,7 @@ import java.util.List;
 public class LectureUserDto {
 	Long lecture_user_id;
 	Long course_id;
+	CourseDto course;
 	Long user_id;
 
 	Long grade;
